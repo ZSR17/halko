@@ -1,0 +1,17 @@
+# Halko with Docker Compose (Linux, Windows and Mac with Docker Desktop, Raspberry Pi): see docs/deployment.md.
+services:
+  halko:
+    image: ghcr.io/zsr17/halko:latest
+    container_name: halko
+    restart: unless-stopped
+    env_file: halko.env              # APP_PASSWORD_HASH='…', made as docs/deployment.md shows
+    volumes:
+      - halko-data:/data             # database, media, backups
+    tmpfs:
+      - /tmp:size=64m                # video conversions in progress
+    mem_limit: 512m
+    ports:
+      - "3000:3000"                  # plain HTTP on the network; only through a reverse proxy (HTTPS): "127.0.0.1:3000:3000"
+
+volumes:
+  halko-data:

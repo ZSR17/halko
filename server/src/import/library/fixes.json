@@ -1,0 +1,406 @@
+{
+ "Ab_Roller": {
+  "type": "bw_reps",
+  "secondary": [
+   "shoulders",
+   "lats",
+   "lowerback"
+  ]
+ },
+ "Barbell_Deadlift": {
+  "primary": [
+   "glutes",
+   "hamstrings",
+   "lowerback"
+  ],
+  "secondary": [
+   "quads",
+   "traps",
+   "lats",
+   "middleback",
+   "forearms"
+  ]
+ },
+ "Barbell_Full_Squat": {
+  "secondary": [
+   "glutes",
+   "hamstrings",
+   "adductors",
+   "lowerback",
+   "calves"
+  ]
+ },
+ "Barbell_Glute_Bridge": {
+  "secondary": [
+   "hamstrings",
+   "adductors"
+  ]
+ },
+ "Barbell_Hip_Thrust": {
+  "secondary": [
+   "hamstrings",
+   "adductors",
+   "quads"
+  ]
+ },
+ "Barbell_Lunge": {
+  "primary": [
+   "quads",
+   "glutes"
+  ],
+  "secondary": [
+   "hamstrings",
+   "adductors",
+   "calves"
+  ]
+ },
+ "Barbell_Shrug": {
+  "secondary": [
+   "forearms"
+  ]
+ },
+ "Barbell_Squat": {
+  "secondary": [
+   "glutes",
+   "hamstrings",
+   "adductors",
+   "lowerback",
+   "calves"
+  ]
+ },
+ "Bent_Over_Barbell_Row": {
+  "primary": [
+   "middleback",
+   "lats"
+  ],
+  "secondary": [
+   "biceps",
+   "shoulders",
+   "traps",
+   "lowerback",
+   "forearms"
+  ]
+ },
+ "Bent_Over_Two-Dumbbell_Row": {
+  "primary": [
+   "middleback",
+   "lats"
+  ],
+  "secondary": [
+   "biceps",
+   "shoulders",
+   "traps",
+   "forearms"
+  ]
+ },
+ "Bodyweight_Walking_Lunge": {
+  "primary": [
+   "quads",
+   "glutes"
+  ],
+  "secondary": [
+   "hamstrings",
+   "adductors",
+   "calves"
+  ]
+ },
+ "Butterfly": {
+  "secondary": [
+   "shoulders"
+  ]
+ },
+ "Dumbbell_Flyes": {
+  "secondary": [
+   "shoulders"
+  ]
+ },
+ "Dumbbell_Lunges": {
+  "primary": [
+   "quads",
+   "glutes"
+  ],
+  "secondary": [
+   "hamstrings",
+   "adductors",
+   "calves",
+   "forearms"
+  ]
+ },
+ "Dumbbell_Shrug": {
+  "secondary": [
+   "forearms"
+  ]
+ },
+ "Dumbbell_Step_Ups": {
+  "primary": [
+   "quads",
+   "glutes"
+  ],
+  "secondary": [
+   "hamstrings",
+   "calves"
+  ]
+ },
+ "EZ-Bar_Curl": {
+  "secondary": [
+   "forearms"
+  ]
+ },
+ "Face_Pull": {
+  "secondary": [
+   "middleback",
+   "traps"
+  ]
+ },
+ "Front_Barbell_Squat": {
+  "secondary": [
+   "glutes",
+   "hamstrings",
+   "abs",
+   "calves"
+  ]
+ },
+ "Front_Box_Jump": {
+  "type": "bw_reps",
+  "primary": [
+   "quads",
+   "glutes"
+  ],
+  "secondary": [
+   "hamstrings",
+   "calves"
+  ]
+ },
+ "Goblet_Squat": {
+  "secondary": [
+   "glutes",
+   "hamstrings",
+   "abs",
+   "calves"
+  ]
+ },
+ "Hammer_Curls": {
+  "secondary": [
+   "forearms"
+  ]
+ },
+ "Hanging_Leg_Raise": {
+  "secondary": [
+   "forearms"
+  ]
+ },
+ "Inverted_Row": {
+  "secondary": [
+   "lats",
+   "biceps",
+   "shoulders"
+  ]
+ },
+ "Lying_Leg_Curls": {
+  "secondary": [
+   "calves"
+  ]
+ },
+ "Mountain_Climbers": {
+  "primary": [
+   "abs"
+  ],
+  "secondary": [
+   "shoulders",
+   "quads",
+   "chest"
+  ]
+ },
+ "One-Arm_Dumbbell_Row": {
+  "primary": [
+   "middleback",
+   "lats"
+  ],
+  "secondary": [
+   "biceps",
+   "shoulders",
+   "forearms"
+  ]
+ },
+ "One-Arm_Kettlebell_Swings": {
+  "primary": [
+   "glutes",
+   "hamstrings"
+  ],
+  "secondary": [
+   "lowerback",
+   "shoulders",
+   "abs",
+   "forearms"
+  ]
+ },
+ "Plank": {
+  "secondary": [
+   "shoulders",
+   "lowerback",
+   "glutes",
+   "quads"
+  ]
+ },
+ "Pullups": {
+  "secondary": [
+   "biceps",
+   "middleback",
+   "forearms"
+  ]
+ },
+ "Push-Ups_-_Close_Triceps_Position": {
+  "secondary": [
+   "chest",
+   "shoulders",
+   "abs"
+  ]
+ },
+ "Push-Ups_With_Feet_Elevated": {
+  "secondary": [
+   "shoulders",
+   "triceps",
+   "abs"
+  ]
+ },
+ "Pushups": {
+  "secondary": [
+   "shoulders",
+   "triceps",
+   "abs"
+  ]
+ },
+ "Reverse_Barbell_Curl": {
+  "primary": [
+   "biceps",
+   "forearms"
+  ],
+  "secondary": []
+ },
+ "Reverse_Flyes": {
+  "secondary": [
+   "middleback",
+   "traps"
+  ]
+ },
+ "Reverse_Machine_Flyes": {
+  "secondary": [
+   "middleback",
+   "traps"
+  ]
+ },
+ "Romanian_Deadlift": {
+  "primary": [
+   "hamstrings",
+   "glutes"
+  ],
+  "secondary": [
+   "lowerback",
+   "forearms",
+   "traps"
+  ]
+ },
+ "Rope_Jumping": {
+  "primary": [
+   "calves"
+  ],
+  "secondary": [
+   "quads",
+   "hamstrings",
+   "shoulders"
+  ]
+ },
+ "Rowing_Stationary": {
+  "primary": [
+   "middleback",
+   "lats",
+   "quads"
+  ],
+  "secondary": [
+   "glutes",
+   "hamstrings",
+   "biceps",
+   "lowerback",
+   "shoulders"
+  ]
+ },
+ "Seated_Cable_Rows": {
+  "primary": [
+   "middleback",
+   "lats"
+  ],
+  "secondary": [
+   "biceps",
+   "shoulders",
+   "traps"
+  ]
+ },
+ "Seated_Leg_Curl": {
+  "secondary": [
+   "calves"
+  ]
+ },
+ "Side_Bridge": {
+  "secondary": [
+   "shoulders",
+   "glutes",
+   "abductors"
+  ]
+ },
+ "Side_Lateral_Raise": {
+  "secondary": [
+   "traps"
+  ]
+ },
+ "Split_Squat_with_Dumbbells": {
+  "primary": [
+   "quads",
+   "glutes"
+  ],
+  "secondary": [
+   "hamstrings",
+   "adductors"
+  ]
+ },
+ "Standing_Military_Press": {
+  "secondary": [
+   "triceps",
+   "traps",
+   "abs"
+  ]
+ },
+ "Stiff-Legged_Barbell_Deadlift": {
+  "secondary": [
+   "glutes",
+   "lowerback",
+   "forearms"
+  ]
+ },
+ "Stiff-Legged_Dumbbell_Deadlift": {
+  "secondary": [
+   "glutes",
+   "lowerback",
+   "forearms"
+  ]
+ },
+ "Sumo_Deadlift": {
+  "primary": [
+   "glutes",
+   "hamstrings",
+   "adductors"
+  ],
+  "secondary": [
+   "quads",
+   "lowerback",
+   "traps",
+   "forearms"
+  ]
+ },
+ "Weighted_Pull_Ups": {
+  "secondary": [
+   "biceps",
+   "middleback",
+   "forearms"
+  ]
+ }
+}

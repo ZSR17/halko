@@ -1,0 +1,7 @@
+Halko
+Copyright 2026 ZSR17
+
+This product includes:
+- the exercises and pictures of free-exercise-db (https://github.com/yuhonas/free-exercise-db), public domain;
+- the anatomical figure of react-native-body-highlighter (https://github.com/HichamELBSI/react-native-body-highlighter),
+  MIT licence, see client/src/assets/body-paths.LICENSE.

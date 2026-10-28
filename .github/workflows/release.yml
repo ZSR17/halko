@@ -1,0 +1,126 @@
+# On a version tag (v1.2.0, made by `npm run release`): the Docker image for every platform, published on
+# ghcr.io as <version>, <major>.<minor>, <major> and latest, then the GitHub release with the changelog of
+# the version. Nothing is published unless the CI of the same commit passed.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  actions: read
+  contents: write
+  packages: write
+
+jobs:
+  ci:
+    name: CI of this commit
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Wait for it to pass
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # `npm run release` pushes the commit to master with its tag: its CI starts at the same time.
+          for i in $(seq 1 30); do
+            id=$(gh run list --workflow ci.yml --commit "$GITHUB_SHA" --json databaseId -q '.[0].databaseId')
+            [ -n "$id" ] && break
+            sleep 10
+          done
+          if [ -z "$id" ]; then echo "No CI run for $GITHUB_SHA: is the commit on master?"; exit 1; fi
+          gh run watch "$id" --exit-status --interval 30 > /dev/null
+          echo "CI passed: https://github.com/$GH_REPO/actions/runs/$id"
+
+  image:
+    needs: ci
+    name: image (${{ matrix.platform }})
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+          # GitHub's arm64 machines cannot run 32-bit programs: emulated.
+          - platform: linux/arm/v7
+            runner: ubuntu-24.04
+            emulated: true
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v7
+      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+      - uses: docker/setup-qemu-action@v4
+        if: matrix.emulated
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE }}
+      # Pushed without a tag: the next job gathers the three platforms under the version's tags.
+      - id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ matrix.platform }}
+      - run: |
+          mkdir digests
+          touch "digests/${DIGEST#sha256:}"
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: digest-${{ strategy.job-index }}
+          path: digests/*
+          retention-days: 1
+
+  publish:
+    needs: image
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: digest-*
+          path: digests
+          merge-multiple: true
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest
+      - name: Gather the platforms under the version's tags
+        working-directory: digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf "$IMAGE@sha256:%s " *)
+          docker buildx imagetools inspect "$IMAGE:${{ steps.meta.outputs.version }}"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: GitHub release
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          node scripts/release-notes.mjs "$version" > notes.md
+          gh release create "$GITHUB_REF_NAME" --title "Halko $version" --notes-file notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

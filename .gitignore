@@ -1,0 +1,9 @@
+node_modules/
+dist/
+data/
+# Personal install (scripts and config of my server), kept out of the repository
+deploy/
+*.log
+.env
+.env.*
+!.env.example

@@ -1,0 +1,103 @@
+# On every push to master and pull request: checks and tests, then the Docker image built and started on each
+# platform it is published for (nothing is published here). A change to the documentation only skips them.
+# "CI passed" sums it up: it is the check a pull request needs to be merged into master.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  changes:
+    runs-on: ubuntu-24.04
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          # Anything but Markdown, docs/ and LICENSE (everything when the base is unknown: a new branch).
+          if git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            files=$(git diff --name-only "$BASE" "$GITHUB_SHA")
+          else
+            files=everything
+          fi
+          code=$(echo "$files" | grep -Ev '\.md$|^docs/|^LICENSE$' | head -1)
+          echo "code=$([ -n "$code" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  checks:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx knip@5
+
+  image:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    name: image (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+          # GitHub's arm64 machines cannot run 32-bit programs: emulated.
+          - platform: linux/arm/v7
+            runner: ubuntu-24.04
+            emulated: true
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-qemu-action@v4
+        if: matrix.emulated
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          tags: halko:test
+          load: true
+          cache-from: type=gha,scope=${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
+      - name: Start it and check the database, photos and videos work
+        run: |
+          # A data folder owned by another user than the default 1000: it is given to it on start.
+          mkdir data
+          docker run -d --name halko --platform ${{ matrix.platform }} -p 3000:3000 -v "$PWD/data:/data" halko:test
+          for i in $(seq 1 120); do
+            if curl -fs http://127.0.0.1:3000/api/health; then break; fi
+            if [ "$i" = 120 ]; then docker logs halko; exit 1; fi
+            sleep 2
+          done
+          echo
+          test "$(stat -c %u data)" = 1000
+          docker exec halko node -e "import('sharp').then((m) => m.default({ create: { width: 2, height: 2, channels: 3, background: 'red' } }).webp().toBuffer()).then(() => console.log('sharp ok'))"
+          docker exec halko ffmpeg -hide_banner -version | head -1
+
+  passed:
+    name: CI passed
+    needs: [changes, checks, image]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Every job passed or was not needed
+        run: |
+          echo "changes: ${{ needs.changes.result }}, checks: ${{ needs.checks.result }}, image: ${{ needs.image.result }}"
+          [[ "${{ needs.changes.result }}" == success ]]
+          [[ "${{ needs.checks.result }}" =~ ^(success|skipped)$ && "${{ needs.image.result }}" =~ ^(success|skipped)$ ]]

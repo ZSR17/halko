@@ -1,0 +1,1960 @@
+/* Design tokens. Defaults = dark theme; appearance.ts overrides them at runtime (theme + user colours). */
+:root {
+  --bg: #0e1012;
+  --surface: #181b1f;
+  --surface2: #22262b;
+  --line: #2c3137;
+  --text: #f2f4f5;
+  --muted: #9aa3ad;
+  --accent: #d4ff3a;
+  --on-accent: #0e1012;
+  --accent-text: #d4ff3a;
+  --muscle-primary: #ff4d2e;
+  --muscle-secondary: #ffd166;
+  --muscle-idle: color-mix(in srgb, var(--text) 18%, var(--surface));
+  --body: color-mix(in srgb, var(--text) 8%, var(--surface));
+  --time: #7cc4ff;
+  --on-time: #0e1012;
+  --superset: #c7b3ff;
+  --superset-bg: color-mix(in srgb, #8b6cff 22%, var(--surface));
+  --warn: #ffc46b;
+  --danger: #ff6b6b;
+  --on-danger: #0e1012;
+  --radius: 16px;
+  --font-display: 'Barlow Condensed', system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --time: #1f6fb8;
+  --on-time: #ffffff;
+  --superset: #5b3fd1;
+  --warn: #9a5b00;
+  --danger: #c62828;
+  --on-danger: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+/* Text sizes are in rem: they follow the text size chosen in the browser or, on iPhone and iPad, in the
+   system settings (-apple-system-body, 17 pt at the default size). */
+html {
+  font-size: 100%;
+}
+@supports (-webkit-touch-callout: none) {
+  html {
+    font: -apple-system-body;
+  }
+}
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+body {
+  font-size: 0.9375rem;
+}
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+a {
+  color: var(--accent-text);
+}
+img {
+  display: block;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+/* Scrollbars: thin and themed. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Shell ---------- */
+.shell {
+  min-height: 100dvh;
+  display: flex;
+}
+.sidebar {
+  display: none;
+}
+.main {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  /* Where the bars that stay at the top of a page stop: below the live session banner, if any. */
+  --sticky-top: 0px;
+}
+.main:has(> .live-banner) {
+  --sticky-top: calc(41px + env(safe-area-inset-top));
+}
+.page {
+  /* Also used by the bars that stay at the top of a page, to cover its whole width and top. */
+  --page-top: calc(20px + env(safe-area-inset-top));
+  /* Clear of the notch or Dynamic Island in landscape. */
+  --page-side: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--page-top) var(--page-side) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px max(4px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left));
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.65625rem;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+/* Rounded for the hover background. */
+.tab {
+  border-radius: 12px;
+}
+.tab.active {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+@media (min-width: 900px) {
+  .tabbar {
+    display: none;
+  }
+  .main {
+    padding-bottom: 0;
+  }
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 256px;
+    flex-shrink: 0;
+    padding: 28px 16px 28px max(16px, env(safe-area-inset-left));
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+  .sidebar .brand {
+    font-family: var(--font-display);
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--accent-text);
+    padding: 0 12px 18px;
+  }
+  .side-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .side-link.active {
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 700;
+  }
+  .page {
+    --page-top: calc(32px + env(safe-area-inset-top));
+    --page-side: max(32px, env(safe-area-inset-right));
+    padding-bottom: 40px;
+  }
+}
+
+.live-banner {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  height: var(--sticky-top);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(10px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+/* The banner already clears the status bar: the page below it keeps a normal margin. */
+.live-banner + .page {
+  --page-top: 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-banner .dot {
+    animation: none;
+  }
+}
+.live-banner .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 1.6s infinite;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.sync-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.sync-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.sync-badge.ok .dot {
+  background: var(--accent);
+}
+.sync-badge.wait .dot {
+  background: var(--warn);
+}
+.sync-badge.bad .dot {
+  background: var(--danger);
+}
+/* What the dot means, under the badge on hover or focus; the current state stands out. */
+.sync-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.sync-tip {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  width: max-content;
+  max-width: 280px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  color: var(--muted);
+}
+.sync-wrap:hover .sync-tip,
+.sync-wrap:focus-within .sync-tip {
+  display: flex;
+}
+.sync-tip .on {
+  color: var(--text);
+  font-weight: 700;
+}
+.sync-badge-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.sync-badge-dot.ok,
+.sync-badge-dot.busy {
+  background: var(--accent);
+}
+.sync-badge-dot.busy {
+  animation: pulse 1s infinite;
+}
+.sync-badge-dot.wait {
+  background: var(--warn);
+}
+.sync-badge-dot.bad {
+  background: var(--danger);
+}
+/* Syncing in the background: the dot pulses, the text stays. */
+.sync-badge.busy .dot {
+  animation: pulse 1s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sync-badge.busy .dot,
+  .sync-badge-dot.busy {
+    animation: none;
+  }
+}
+
+@media (max-width: 359px) {
+  .hide-narrow {
+    display: none;
+  }
+}
+
+/* ---------- Typography ---------- */
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 1;
+}
+.title-sm {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.625rem;
+  line-height: 1.05;
+}
+.num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* Same width for every digit: a running time does not shift at each second. */
+  font-variant-numeric: tabular-nums;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 0.75rem;
+}
+.label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.section-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ---------- Surfaces ---------- */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+.between {
+  justify-content: space-between;
+}
+
+/* ---------- Controls ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.btn-ghost {
+  border-color: transparent;
+  color: var(--accent-text);
+  min-height: 44px;
+  padding: 0 8px;
+}
+.btn-danger {
+  color: var(--danger);
+}
+.btn-danger-solid {
+  background: var(--danger);
+  color: var(--on-danger);
+  border-color: var(--danger);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btn-dashed {
+  border: 2px dashed var(--line);
+  color: var(--accent-text);
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.chip {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.chip[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: var(--surface2);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--bg);
+}
+.seg button {
+  min-height: 34px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.seg button[aria-pressed='true'] {
+  background: var(--surface2);
+  color: var(--text);
+}
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  outline: none;
+}
+/* Text fields show focus with their own border, not the global focus ring around it. */
+.input:focus-visible,
+.cell-input:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+.search:focus-within {
+  border-color: var(--accent);
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+}
+.switch {
+  width: 52px;
+  height: 32px;
+  border-radius: 16px;
+  background: var(--line);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.15s;
+}
+[aria-pressed='true'] > .switch {
+  background: var(--accent);
+}
+[aria-pressed='true'] > .switch::after {
+  left: 23px;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.toggle-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.toggle-row:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- Lists ---------- */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+  border: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+.thumb-sm {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Exercise media ---------- */
+.media {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+}
+.media img,
+.media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* Pictures are shown whole (any shape, as framed when added) over a blurred copy filling the frame. */
+.media .media-backdrop {
+  object-fit: cover;
+  filter: blur(24px) brightness(0.6);
+  transform: scale(1.15);
+}
+/* Exercise without photo or video. */
+.media-empty {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, var(--surface) 0 14px, var(--surface2) 14px 28px);
+}
+.media .frame-b {
+  animation: frame-b 2.2s infinite ease-in-out;
+}
+/* Photo being cropped: the whole picture, the part kept in a frame, the rest darkened. */
+.crop-box {
+  display: flex;
+  justify-content: center;
+  /* Never squeezed by the sheet: that cut the bottom of tall photos, handles included. */
+  flex-shrink: 0;
+  padding: 8px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface2);
+}
+.crop-stage {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+}
+.crop-stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.crop-selection {
+  position: absolute;
+  box-shadow: 0 0 0 9999px rgb(0 0 0 / 0.55);
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+  cursor: move;
+}
+.crop-selection:focus-visible {
+  outline-width: 3px;
+  outline-offset: 0;
+}
+.crop-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+}
+.crop-handle.nw {
+  left: 0;
+  top: 0;
+  cursor: nwse-resize;
+}
+.crop-handle.n {
+  left: 50%;
+  top: 0;
+  cursor: ns-resize;
+}
+.crop-handle.ne {
+  left: 100%;
+  top: 0;
+  cursor: nesw-resize;
+}
+.crop-handle.e {
+  left: 100%;
+  top: 50%;
+  cursor: ew-resize;
+}
+.crop-handle.se {
+  left: 100%;
+  top: 100%;
+  cursor: nwse-resize;
+}
+.crop-handle.s {
+  left: 50%;
+  top: 100%;
+  cursor: ns-resize;
+}
+.crop-handle.sw {
+  left: 0;
+  top: 100%;
+  cursor: nesw-resize;
+}
+.crop-handle.w {
+  left: 0;
+  top: 50%;
+  cursor: ew-resize;
+}
+/* Movement shown next to a hovered exercise of the picker (above the sheet it is in). */
+.exercise-preview {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 0.45);
+  pointer-events: none;
+}
+@keyframes frame-b {
+  0%,
+  38% {
+    opacity: 0;
+  }
+  50%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* Full-bleed photo in narrow windows, rounded card on wide screens. */
+.page-hero {
+  padding-top: 0;
+}
+.hero-media {
+  height: 330px;
+  margin: 0 -16px;
+  border-radius: 0 0 24px 24px;
+}
+@media (min-width: 900px) {
+  .page-hero {
+    padding-top: 32px;
+  }
+  .hero-media {
+    height: 400px;
+    margin: 0;
+    border-radius: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .media .frame-b {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ---------- Workout editor ---------- */
+.item-card {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+.item-card.in-superset {
+  border-color: color-mix(in srgb, var(--superset) 45%, transparent);
+}
+.superset-tag {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: var(--superset-bg);
+  color: var(--superset);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+.fields {
+  display: flex;
+  gap: 6px;
+}
+.field {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 4px;
+  border-radius: 12px;
+  background: var(--surface2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+/* A field turned on or off by its switch (in the place of a value). */
+.field-toggle {
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.field-off {
+  opacity: 0.4;
+}
+.field span {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--muted);
+  /* A long label goes on two lines, still centred over its value. */
+  text-align: center;
+}
+.cell-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  outline: none;
+}
+.cell-input.static {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Not the small grey label of a field: the value itself. */
+.field > .cell-input.static {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text);
+}
+span.kind-btn {
+  display: flex;
+  align-items: center;
+  cursor: default;
+}
+.set-row {
+  display: grid;
+  grid-template-columns: 56px repeat(var(--cols), minmax(0, 1fr)) 64px 36px;
+  gap: 6px;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--surface2);
+}
+.set-head {
+  background: transparent;
+  min-height: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+}
+.set-head > :first-child {
+  text-align: left;
+  padding-left: 4px;
+}
+.set-row .cell-input {
+  font-size: 1.1875rem;
+  min-height: 34px;
+}
+/* A warm-up value worked out from the working sets; one typed in has a button to go back to that. */
+.set-row .cell-input.auto {
+  color: var(--muted);
+}
+.cell-wrap {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.cell-reset {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.set-row .rest {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.kind-btn {
+  border: 0;
+  background: transparent;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: pointer;
+  min-height: 36px;
+  padding: 0 4px;
+}
+.kind-btn {
+  border-radius: 8px;
+}
+.kind-btn.warmup {
+  color: var(--warn);
+}
+.note-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: var(--bg);
+  min-height: 42px;
+  border: 1px solid transparent;
+}
+.note-input:focus-within {
+  border-color: var(--accent);
+}
+.note-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 0.8125rem;
+}
+.link-btn {
+  align-self: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px dashed var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.link-btn.linked {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--superset) 45%, transparent);
+  color: var(--superset);
+}
+/* Icon buttons without their own background (inside cards), and over a picture. */
+.icon-btn-plain {
+  background: transparent;
+  width: 36px;
+}
+.icon-btn.on-media {
+  background: rgb(14 16 18 / 0.7);
+  color: #fff;
+}
+.drag-handle {
+  cursor: grab;
+  color: var(--muted);
+  background: transparent;
+  width: 36px;
+}
+
+/* ---------- Live session ---------- */
+/* One segment per exercise of the session (not the .progress bar of downloads). */
+.session-progress {
+  display: grid;
+  gap: 4px;
+}
+.session-progress span {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.session-progress span.current {
+  background: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+.session-progress span.full {
+  background: var(--accent);
+}
+.live-row {
+  display: grid;
+  /* Set, last time, one column per measure (--cols: kg, reps…), check. */
+  grid-template-columns: 52px minmax(0, 1fr) repeat(var(--cols, 1), minmax(0, 0.8fr)) 32px;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+.live-row.done {
+  background: var(--surface);
+}
+.live-row.current {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+}
+.live-row .cell-input.boxed {
+  min-height: 36px;
+  font-size: 1.125rem;
+  border-color: var(--line);
+  background: var(--bg);
+}
+.live-row .cell-input.boxed:disabled {
+  opacity: 0.4;
+}
+.live-head {
+  min-height: 0;
+  cursor: default;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.check {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--surface2);
+  display: grid;
+  place-items: center;
+}
+/* Outlined until done: the empty box alone was hardly visible on its row. */
+.check:not(.on) {
+  box-shadow: inset 0 0 0 2px var(--muted);
+}
+.check.on {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+button.check {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+button.check:not(.on):hover {
+  background: color-mix(in srgb, var(--accent) 35%, var(--surface2));
+}
+.steppers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-height: 64px;
+  padding: 0 6px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+.stepper > button {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 0;
+  background: var(--surface2);
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.stepper-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+.stepper-value .cell-input {
+  font-size: 1.625rem;
+  min-height: 34px;
+}
+.stepper > button:disabled,
+.stepper .cell-input:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+/* Rest: a bar at the bottom, so the sets above stay usable (to correct one) while it runs. */
+.rest-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 12px max(16px, env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  border-radius: 20px 20px 0 0;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -12px 40px rgb(0 0 0 / 0.35);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+.rest-actions {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 8px;
+}
+@media (max-width: 560px) {
+  .rest-actions {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 900px) {
+  .rest-bar {
+    left: 256px;
+  }
+}
+/* Room for the rest bar under the last controls. */
+.main:has(.page.live.resting) {
+  padding-bottom: calc(170px + env(safe-area-inset-bottom));
+}
+/* The live screen has its own controls: hide the tab bar so nothing is tapped by mistake. */
+.shell:has(.page.live) .tabbar {
+  display: none;
+}
+.main:has(.page.live) {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+/* ---------- Charts & stats ---------- */
+.chart {
+  position: relative;
+  outline-offset: 4px;
+}
+.chart svg {
+  display: block;
+  overflow: visible;
+}
+.chart .axis {
+  fill: var(--muted);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}
+.chart .end-label {
+  fill: var(--text);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.tooltip {
+  position: absolute;
+  transform: translateX(-50%);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.tooltip strong {
+  color: var(--text);
+  font-size: 0.9375rem;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+.stat {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat .value {
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 700;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.data-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 700;
+  padding: 6px 8px;
+}
+.data-table td {
+  padding: 8px;
+  border-top: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+.record {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ---------- Sheet (modal) ---------- */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgb(0 0 0 / 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sheet {
+  width: 100%;
+  max-width: 720px;
+  max-height: 92dvh;
+  background: var(--bg);
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Outside the scrolling body: its scrollbar ends above the rounded corner, which would hide its arrow. */
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+/* Its full height whatever it holds: a list filtered down to a few rows does not shrink it. */
+.sheet-wide {
+  height: 92dvh;
+}
+@media (min-width: 900px) {
+  .sheet-backdrop {
+    align-items: center;
+  }
+  .sheet {
+    border-radius: 24px;
+    max-height: 86dvh;
+  }
+  .sheet-wide {
+    max-width: 1040px;
+    height: 86dvh;
+  }
+}
+.sheet-body {
+  overflow-y: auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* Content taller than the sheet scrolls: nothing is squeezed (a card with hidden overflow would shrink to 0). */
+.sheet-body > * {
+  flex-shrink: 0;
+}
+
+/* ---------- Colour swatches ---------- */
+.swatch {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  box-shadow: inset 0 0 0 2px var(--surface);
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+.swatch[aria-pressed='true'] {
+  border-color: var(--text);
+}
+.swatch-custom {
+  background: transparent;
+  border: 2px dashed var(--line);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.swatch-custom input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.two-col {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+}
+.two-col > .col-main {
+  flex: 2 1 520px;
+  min-width: 0;
+}
+.two-col > .col-side {
+  flex: 1 1 300px;
+  min-width: 0;
+}
+
+/* ---------- Exercise editor ---------- */
+textarea.input {
+  min-height: 120px;
+  padding: 12px 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+/* Drop-down lists (Select): the field, with an arrow, and the list it opens, in the app's colours. */
+.select {
+  position: relative;
+}
+.select-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+.select-button svg {
+  flex-shrink: 0;
+  color: var(--muted);
+  transform: rotate(90deg);
+  transition: transform 0.15s;
+}
+.select-button[aria-expanded='true'] {
+  border-color: var(--accent);
+}
+.select-button[aria-expanded='true'] svg {
+  transform: rotate(-90deg);
+}
+.select-list {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+  outline: none;
+}
+.select-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.select-list li.active {
+  background: var(--surface2);
+}
+.select-list li[aria-selected='true'] {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+/* Muscle chips cycle: off, main, secondary. */
+.chip[data-level='primary'] {
+  background: var(--muscle-primary);
+  border-color: var(--muscle-primary);
+  color: #111;
+}
+.chip[data-level='secondary'] {
+  background: var(--muscle-secondary);
+  border-color: var(--muscle-secondary);
+  color: #111;
+}
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.media-tile {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+.media-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.media-tile .remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 0;
+  background: rgb(14 16 18 / 0.75);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.media-tile.add-tile {
+  background: none;
+}
+.add-tile .add {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border: 1.5px dashed var(--line);
+  border-radius: inherit;
+  background: none;
+  color: var(--accent-text);
+  cursor: pointer;
+}
+.media-tile .badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgb(14 16 18 / 0.75);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+/* ---------- Progress bar ---------- */
+.progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface2);
+  overflow: hidden;
+}
+.progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+/* ---------- Slider ---------- */
+.range {
+  width: 100%;
+  height: 32px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ---------- Plate calculator ---------- */
+.plate-row {
+  gap: 8px;
+  padding: 8px;
+}
+.plate-row .stepper {
+  background: var(--surface2);
+}
+.plate-weight {
+  flex: 0 0 84px;
+  align-self: stretch;
+  justify-content: center;
+}
+.plate-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.plate-count {
+  display: inline-block;
+  min-width: 36px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--accent-text);
+}
+.notice-warn {
+  color: var(--warn);
+  border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
+  line-height: 1.45;
+}
+
+/* ---------- 1RM calculator ---------- */
+.percent-table {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 14px;
+}
+.percent-table > .row {
+  min-height: 44px;
+  margin: 0 -8px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+.percent-table > .row:hover {
+  background: var(--surface2);
+}
+.percent-table .percent {
+  min-width: 44px;
+  color: var(--muted);
+}
+.percent-table > .row:last-child {
+  border-bottom: 0;
+}
+.percent-kg {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+/* ---------- History: sessions by month ---------- */
+.month > summary {
+  list-style: none;
+}
+.month > summary::-webkit-details-marker {
+  display: none;
+}
+.month-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 4px;
+  cursor: pointer;
+}
+.month-head svg {
+  transition: transform 0.15s;
+}
+.month[open] > .month-head svg {
+  transform: rotate(90deg);
+}
+.month[open] > .month-head {
+  margin-bottom: 4px;
+}
+.record-stat {
+  color: inherit;
+  text-decoration: none;
+}
+.record-stat:hover {
+  background: var(--surface2);
+}
+.record-stat .value {
+  font-size: 1.375rem;
+}
+/* The name of a workout being edited, in the place and size of its title. */
+.title-input {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  min-height: 56px;
+}
+
+/* ---------- Live session: all the exercises ---------- */
+.live-top {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: calc(-1 * var(--page-top)) calc(-1 * var(--page-side)) 0;
+  padding: var(--page-top) var(--page-side) 12px;
+  background: var(--bg);
+}
+/* Brought into view below the bar that stays at the top. */
+.current-exercise {
+  scroll-margin-top: 110px;
+}
+.overview-row.past {
+  padding: 10px 12px;
+}
+.overview-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.overview-row:hover {
+  background: var(--surface2);
+}
+/* A done set in an exercise's card: stands out from the card itself. */
+.card .live-row.done {
+  background: var(--surface2);
+}
+.overview-mark {
+  display: inline-flex;
+  justify-content: center;
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--accent-text);
+}
+/* An exercise below or above the current one: same layout, set apart by a line. */
+.other-exercise {
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+/* Two or more choices side by side, each one clearly a button: the chosen one in the accent colour. */
+.choice-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.choice-row button {
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface2);
+  font-weight: 700;
+  cursor: pointer;
+}
+.choice-row button:not([aria-pressed='true']):hover {
+  background: var(--line);
+}
+.choice-row button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Exercises page: the body map to pick muscles, next to the list on a large screen, above it otherwise. */
+.library-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.library-body figure svg {
+  height: 170px;
+  width: auto;
+}
+/* The top of the Exercises page and of a workout being edited: stays in view while scrolling. */
+.library-head,
+.edit-head {
+  position: sticky;
+  top: var(--sticky-top);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: calc(-1 * var(--page-top)) calc(-1 * var(--page-side)) 0;
+  padding: var(--page-top) var(--page-side) 12px;
+  background: var(--bg);
+}
+/* Each its own layer: when the head changed height, Chrome left bits of the old picture of it and of the
+   body map, sticky and overlapping it, over the list. */
+.library-head,
+.library-body {
+  will-change: transform;
+}
+.library-spacer {
+  display: none;
+}
+.body-region {
+  cursor: pointer;
+}
+.body-region:focus {
+  outline: none;
+}
+.body-region:focus-visible path {
+  stroke: var(--accent);
+  stroke-width: 8;
+}
+@media (min-width: 900px) {
+  .library-layout {
+    grid-template-columns: 320px minmax(0, 1fr);
+    align-items: start;
+  }
+  .library-body {
+    position: sticky;
+    z-index: 16;
+    top: calc(var(--sticky-top) + var(--body-top));
+    /* Up next to the search (the gap between the head and the list included). */
+    margin-top: calc(-16px - var(--body-pull));
+  }
+  .library-spacer {
+    display: block;
+  }
+  .library-body figure svg {
+    height: 300px;
+  }
+}
+
+/* Picking an exercise in a sheet: the same body map, kept in view next to the list on a large screen. */
+.picker-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+.picker-body figure svg {
+  height: 170px;
+  width: auto;
+}
+@media (min-width: 900px) {
+  .picker-layout {
+    grid-template-columns: 280px minmax(0, 1fr);
+    align-items: start;
+  }
+  .picker-body {
+    position: sticky;
+    top: 0;
+  }
+  .picker-body figure svg {
+    height: 300px;
+  }
+}
+
+/* Workouts page in its edit mode: what can be done, and the new folder button. */
+.edit-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 10px 14px;
+  border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  color: var(--accent-text);
+}
+/* A button of the size of a ghost one, main or not (« Edit » becoming « Done »). */
+.btn-compact {
+  min-height: 44px;
+  padding: 0 12px;
+}
+/* Labels of one button taking turns: each takes room, only one shows. */
+.swap {
+  display: grid;
+}
+.swap > span {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.swap > .off {
+  visibility: hidden;
+}
+
+/* Workout and folder cards of the workouts page. A folder lights up while a workout is dragged over it,
+   and the card under the pointer gets smaller (it goes in). A folder being edited has a cross on each. */
+.card-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--surface2);
+  display: grid;
+  place-items: center;
+  color: var(--accent-text);
+  font-size: 1.125rem;
+}
+.list-item.drop-over {
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  border-color: var(--accent);
+}
+.drag-card {
+  cursor: grabbing;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.45);
+  border-color: var(--line);
+}
+.drag-card.into-folder {
+  transform: scale(0.92);
+  border-color: var(--accent);
+}
+.card-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* ---------- Hover ---------- */
+/* Every button and link that acts shows it under the mouse (not on touch screens, where it would stick). */
+.btn,
+.icon-btn,
+.chip,
+.seg button,
+.stepper > button,
+.list-item,
+.toggle-row,
+.side-link,
+.tab,
+.link-btn,
+.swatch,
+.media-tile .remove,
+.add-tile .add,
+.live-banner,
+.sync-badge,
+.select-button,
+button.check {
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    filter 0.15s,
+    transform 0.15s;
+}
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    background: var(--surface2);
+  }
+  .btn-primary:hover:not(:disabled),
+  .btn-danger-solid:hover:not(:disabled),
+  .chip[aria-pressed='true']:hover,
+  .choice-row button[aria-pressed='true']:hover,
+  .live-banner:hover,
+  button.check.on:hover,
+  .btn-time:hover {
+    filter: brightness(1.1);
+  }
+  .icon-btn.on-media:hover {
+    background: rgb(14 16 18 / 0.9);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent);
+  }
+  .btn-danger-solid:hover:not(:disabled) {
+    background: var(--danger);
+  }
+  .body-region:hover path {
+    filter: brightness(1.25);
+  }
+  .cell-reset:hover {
+    background: var(--surface);
+  }
+  .card-remove:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--danger) 12%, transparent);
+  }
+  .btn-dashed:hover:not(:disabled),
+  .add-tile .add:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  /* Only rows that act: some list or setting rows only show information. */
+  .icon-btn:is(a, button):hover:not(:disabled),
+  .list-item:is(a, button, [role='button']):hover,
+  .toggle-row:is(a, button):hover,
+  .sync-badge:hover {
+    background: var(--surface2);
+  }
+  .chip:not([aria-pressed='true']):hover,
+  .link-btn:hover,
+  .select-button:hover {
+    background: var(--surface2);
+  }
+  .seg button:not([aria-pressed='true']):hover {
+    background: color-mix(in srgb, var(--surface2) 55%, transparent);
+  }
+  .tab:not(.active):hover {
+    background: var(--surface2);
+  }
+  .stepper > button:hover:not(:disabled) {
+    background: var(--line);
+  }
+  .side-link:not(.active):hover {
+    background: var(--surface2);
+  }
+  .kind-btn:is(button):hover {
+    background: var(--line);
+  }
+  .swatch:hover {
+    transform: scale(1.08);
+  }
+  .media-tile .remove:hover {
+    background: rgb(14 16 18 / 0.95);
+  }
+}
