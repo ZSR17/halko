@@ -50,6 +50,13 @@ export function exercisesToWire(db: Db | Tx, rows: MergedExercise[]): WireExerci
   });
 }
 
+// The old row of a library exercise that now has a fixed id (library-ids.ts): a device that has not synced
+// since still sends its id.
+export function replacedExercise(db: Db | Tx, id: string): ExerciseRow | undefined {
+  const row = db.select().from(exercises).where(eq(exercises.id, id)).get();
+  return row?.replacedBy ? row : undefined;
+}
+
 type PushResult = { stored: true } | { reason: string } | { bounce: MergedExercise };
 
 // Stores one pushed exercise: a new or edited custom exercise, or this user's version of a
@@ -99,6 +106,7 @@ export function pushExercise(tx: Tx, userId: string, row: WireRow<'exercises'>):
 // Drops this user's changes to a built-in exercise. Returns false when there were none.
 export function resetExercise(db: Db, userId: string, exerciseId: string): boolean {
   return db.transaction((tx) => {
+    exerciseId = replacedExercise(tx, exerciseId)?.replacedBy ?? exerciseId;
     const existing = overridesFor(tx, userId, [exerciseId]).get(exerciseId);
     if (!existing || existing.deleted) return false;
     tx.update(exerciseOverrides)

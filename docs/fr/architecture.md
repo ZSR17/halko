@@ -58,7 +58,10 @@ sequenceDiagram
 La bibliothèque (876 exercices de free-exercise-db, en anglais et en français) est commune. Quand tu modifies un
 exercice de la bibliothèque, ta version est stockée à part (`exercise_overrides`) et fusionnée à la volée :
 la bibliothèque peut être mise à jour sans écraser tes changements, et « Rétablir l'original » supprime
-simplement ta version. Tes propres exercices ont `source: 'custom'`.
+simplement ta version. Tes propres exercices ont `source: 'custom'`. Un exercice de la bibliothèque a le
+même identifiant sur tous les serveurs, `lib-<sourceRef>` (`server/src/import/library-ids.ts`) ; les
+anciens identifiants aléatoires restent sur des lignes supprimées qui renvoient au nouveau (`replaced_by`),
+pour les appareils qui les envoient encore.
 
 Ses textes sont dans `server/src/import/library/` : `en.json` (le texte d'origine, la référence), un
 fichier par autre langue (`fr.json`, complet ou non) et `fixes.json` (corrections de muscles et de types,

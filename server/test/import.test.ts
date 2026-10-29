@@ -114,6 +114,7 @@ describe('importFreeExerciseDb', () => {
     const rows = ctx.db.select().from(exercises).all();
     const squat = rows.find((r) => r.sourceRef === 'Barbell_Squat')!;
     expect(squat).toMatchObject({
+      id: 'lib-Barbell_Squat',
       source: 'builtin',
       userId: null,
       exerciseType: 'weight_reps',

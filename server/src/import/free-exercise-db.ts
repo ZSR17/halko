@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { ExerciseType, MuscleId, Sport } from '@halko/shared';
@@ -6,6 +5,7 @@ import { and, eq } from 'drizzle-orm';
 import { type Db, nextRev } from '../db/index.ts';
 import { exercises } from '../db/schema.ts';
 import { storeImage } from '../lib/media.ts';
+import { libraryExerciseId } from './library-ids.ts';
 
 // https://github.com/yuhonas/free-exercise-db (public domain / Unlicense)
 const DEFAULT_SOURCE_URL = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main';
@@ -144,7 +144,7 @@ export async function importFreeExerciseDb(db: Db, dataDir: string, opts: Import
         tx.update(exercises).set({ ...values, rev }).where(eq(exercises.id, existing.id)).run();
       } else {
         tx.insert(exercises)
-          .values({ id: randomUUID(), userId: null, source: 'builtin', sourceRef: e.id, createdAt: now, rev, ...values })
+          .values({ id: libraryExerciseId(e.id), userId: null, source: 'builtin', sourceRef: e.id, createdAt: now, rev, ...values })
           .run();
       }
     });

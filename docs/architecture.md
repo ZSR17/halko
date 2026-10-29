@@ -57,7 +57,9 @@ sequenceDiagram
 The library (876 exercises from free-exercise-db, in English and French) is shared. When you change a
 library exercise, your version is stored apart (`exercise_overrides`) and merged on the fly: the library
 can be updated without overwriting your changes, and "Restore the original" simply deletes your version.
-Your own exercises have `source: 'custom'`.
+Your own exercises have `source: 'custom'`. A library exercise has the same id on every server,
+`lib-<sourceRef>` (`server/src/import/library-ids.ts`); the old random ids are kept on deleted rows that
+point at the new one (`replaced_by`), for the devices that still send them.
 
 Its texts are in `server/src/import/library/`: `en.json` (the original text, the reference), one file per
 other language (`fr.json`, complete or not) and `fixes.json` (muscle and type fixes, whatever the

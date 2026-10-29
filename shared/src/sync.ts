@@ -110,7 +110,7 @@ export type ExerciseTranslations = Record<string, { name: string; instructions: 
 
 // Exercises as pulled: ready-to-use media URLs, whether this user changed a built-in one, the translations
 // of a built-in one (none once this user changed it: their text is shown as is), and its free-exercise-db
-// id (the same on every server, unlike `id`: a shared workout names library exercises by it).
+// id (a shared workout names library exercises by it; their `id` is `lib-<sourceRef>`).
 export type WireExercise = WireRow<'exercises'> & {
   mediaUrls: string[];
   customized: boolean;

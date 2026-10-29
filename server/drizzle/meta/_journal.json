@@ -15,6 +15,13 @@
       "when": 1793044009282,
       "tag": "0001_drop_programs",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793310832708,
+      "tag": "0002_library_replaced_by",
+      "breakpoints": true
     }
   ]
 }

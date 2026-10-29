@@ -39,6 +39,13 @@ la bibliothèque, `name` et `instructions` sont en anglais, et `translations` do
 `{ "fr": { "name": "…", "instructions": ["…"] } }`. Une langue absente s'affiche en anglais. Ta version
 d'un exercice et tes propres exercices ont `translations: {}` : leur texte s'affiche tel quel.
 
+Un exercice de la bibliothèque a l'identifiant `lib-<sourceRef>` (`lib-Barbell_Squat`), le même sur tous
+les serveurs : une app qui embarque la bibliothèque peut s'en servir avant sa première synchro. Les
+serveurs installés avant cette règle passent leurs exercices de la bibliothèque à ces identifiants au
+démarrage. Un appareil qui envoie encore un ancien identifiant (dans un exercice, un exercice de séance ou
+une série) n'est pas refusé : le serveur enregistre la ligne sous le nouvel identifiant, et la lui renvoie
+avec l'ancien exercice, supprimé.
+
 Un exercice qui travaille un côté à la fois (un bras, une jambe, planche latérale…) a `unilateral: true` :
 chaque série se fait d'un côté puis de l'autre, et ses répétitions, son temps et sa distance sont par côté.
 Les exercices de la bibliothèque arrivent marqués (`server/src/import/library/unilateral.json`) ; ce

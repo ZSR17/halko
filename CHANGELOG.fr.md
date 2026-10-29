@@ -4,6 +4,10 @@
 
 ## Pas encore publié
 
+- Les exercices de la bibliothèque ont le même identifiant sur tous les serveurs. Un serveur existant les
+  déplace au démarrage, avec les séances, les séries et tes versions qui les utilisent ; les appareils pas
+  encore synchronisés continuent de fonctionner.
+
 ## 1.0.0 — 2026-10-28
 
 Première version publiée.

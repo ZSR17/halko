@@ -39,6 +39,12 @@ the same on every server, which names it in a shared workout file: `shared/src/s
 `{ "fr": { "name": "…", "instructions": ["…"] } }`. A missing language shows in English. Your version of
 an exercise and your own exercises have `translations: {}`: their text is shown as is.
 
+A library exercise has the id `lib-<sourceRef>` (`lib-Barbell_Squat`), the same on every server: an app
+that embeds the library can use it before its first sync. Servers set up before this rule move their
+library exercises to these ids on start. A device that still sends an old id (in an exercise, a workout
+item or a set) is not refused: the server stores the row under the new id, and sends it back along with
+the old exercise, deleted.
+
 An exercise working one side at a time (one arm, one leg, side plank…) has `unilateral: true`: each set
 is done on one side then the other, and its reps, time and distance are per side. Library exercises come
 marked (`server/src/import/library/unilateral.json`); it is not set by the user, and what a device sends
