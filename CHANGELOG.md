@@ -4,6 +4,8 @@ English · [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 1.1.0 — 2026-10-29
+
 - Library exercises have the same id on every server. An existing server moves them on start, with the
   workouts, sets and your versions that use them; devices that have not synced yet keep working.
 
