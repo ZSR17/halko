@@ -3,6 +3,7 @@ import { loadConfig } from './config.ts';
 import { ensureOwner, openDb } from './db/index.ts';
 import { isPasswordHash } from './lib/password.ts';
 import { ensureLibrary } from './import/library.ts';
+import { applyLibraryIds } from './import/library-ids.ts';
 import { applyLibraryText } from './import/library-text.ts';
 import { backupDatabase, cleanupMedia } from './storage.ts';
 import { currentRev, revEvents } from './sync.ts';
@@ -12,6 +13,8 @@ const db = openDb(config.dataDir);
 const ownerId = ensureOwner(db);
 const app = await buildApp({ config, db, ownerId, logger: { level: process.env.LOG_LEVEL ?? 'info' } });
 
+const moved = applyLibraryIds(db);
+if (moved) app.log.info(`${moved} built-in exercises moved to their fixed id`);
 const updated = applyLibraryText(db);
 if (updated) app.log.info(`${updated} built-in exercises updated (names, instructions, translations)`);
 

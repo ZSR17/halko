@@ -9,7 +9,7 @@ import {
 } from '@halko/shared';
 import { and, asc, eq, gt, inArray, isNull, or, sql } from 'drizzle-orm';
 import { type Db, type Tx, instanceId, nextRev } from './db/index.ts';
-import { exercisesToWire, mergeExercise, overridesFor, pushExercise } from './exercises.ts';
+import { exercisesToWire, mergeExercise, overridesFor, pushExercise, replacedExercise } from './exercises.ts';
 import * as schema from './db/schema.ts';
 
 const PAGE_SIZE = 500;
@@ -97,14 +97,25 @@ function pushChanges(db: Db, userId: string, changes: Record<string, unknown[] |
           continue;
         }
         if (table === 'exercises') {
-          const result = pushExercise(tx, userId, parsed.data as WireRow<'exercises'>);
+          const pushed = parsed.data as WireRow<'exercises'>;
+          const replaced = replacedExercise(tx, pushed.id);
+          if (replaced) pushed.id = replaced.replacedBy!;
+          const result = pushExercise(tx, userId, pushed);
           if ('stored' in result) stored++;
           else if ('reason' in result) rejected.push({ table, id: rawId, reason: result.reason });
           else (bounced.exercises ??= []).push(...exercisesToWire(tx, [result.bounce]));
+          // The device gets its old row back deleted, at least as recent as its own version so that it is applied.
+          if (replaced && !('reason' in result)) {
+            const updatedAt = Math.max(replaced.updatedAt, pushed.updatedAt);
+            (bounced.exercises ??= []).push(...exercisesToWire(tx, [{ ...replaced, updatedAt, customized: false }]));
+          }
           continue;
         }
         const t = TABLES[table];
         const row = parsed.data as Record<string, unknown> & { id: string; updatedAt: number };
+        if (table === 'workoutItems' || table === 'setLogs') {
+          row.exerciseId = replacedExercise(tx, String(row.exerciseId))?.replacedBy ?? row.exerciseId;
+        }
         let existing = getById(tx, t, row.id);
         if (table === 'userSettings') {
           // One row per (user, key): reuse the server id whatever the device sent.
@@ -236,9 +247,13 @@ export function sync(
   const pushed = pushChanges(db, userId, changes);
   const pulled = pullChanges(db, userId, since);
   for (const [table, rows] of Object.entries(pushed.bounced)) {
-    const list = ((pulled.changes as Record<string, unknown[]>)[table] ??= []);
-    const ids = new Set(list.map((r) => (r as { id: string }).id));
-    for (const r of rows as { id: string }[]) if (!ids.has(r.id)) list.push(r);
+    // A bounced row more recent than the pulled one replaces it (the old row of a replaced exercise).
+    const list = ((pulled.changes as Record<string, unknown[]>)[table] ??= []) as { id: string; updatedAt: number }[];
+    for (const r of rows as { id: string; updatedAt: number }[]) {
+      const i = list.findIndex((p) => p.id === r.id);
+      if (i < 0) list.push(r);
+      else if (r.updatedAt > list[i]!.updatedAt) list[i] = r;
+    }
   }
   return { instance, rev: pulled.rev, hasMore: pulled.hasMore, remaining: pulled.remaining, changes: pulled.changes, rejected: pushed.rejected };
 }

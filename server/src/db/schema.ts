@@ -67,6 +67,8 @@ export const exercises = sqliteTable(
     userId: text('user_id').references(() => users.id),
     source: text('source', { enum: ['builtin', 'custom'] }).notNull(),
     sourceRef: text('source_ref'),
+    // A library exercise that had a random id: deleted, and the id it now has (see library-ids.ts).
+    replacedBy: text('replaced_by'),
     name: text('name').notNull(),
     sport: text('sport').$type<Sport>().notNull(),
     exerciseType: text('exercise_type').$type<ExerciseType>().notNull(),
