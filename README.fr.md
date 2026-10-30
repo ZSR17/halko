@@ -138,6 +138,7 @@ navigateur de dev voit alors que la base a changé et repart de zéro au lieu de
 | `npm run typecheck` | Vérification TypeScript des trois paquets |
 | `npm run build` | Compilation de l'app web dans `client/dist` |
 | `npm run seed:history` | Séances Push, Pull et Legs avec 18 mois d'historique dans `server/data`, pour essayer l'historique, les records et les graphiques |
+| `npm run export:library -- --out <dossier>` | La bibliothèque d'exercices telle qu'un nouveau serveur l'importe (`exercises.json` et `images/`), pour une app qui l'embarque |
 | `npm run db:generate` | Nouvelle migration après une modification de `server/src/db/schema.ts` |
 | `npx knip` | Détection du code et des dépendances inutilisés |
 | `npm run release -- minor` | Publie une version (`patch` pour des corrections seulement, `major` quand la mise à jour demande une étape à la main) |
