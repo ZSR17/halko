@@ -10,6 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "seed:history": "tsx --env-file-if-exists=.env src/scripts/seed-history.ts",
     "import:exercises": "tsx src/scripts/import-exercises.ts",
+    "export:library": "tsx src/scripts/export-library.ts",
     "hash-password": "tsx src/scripts/hash-password.ts"
   },
   "dependencies": {

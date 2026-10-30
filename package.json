@@ -15,6 +15,7 @@
     "db:generate": "npm run db:generate -w server",
     "seed:history": "npm run seed:history -w server --",
     "import:exercises": "npm run import:exercises -w server",
+    "export:library": "npm run export:library -w server --",
     "hash-password": "npm run hash-password -w server --",
     "dev": "concurrently -k -n server,client -c blue,green \"npm:dev:server\" \"npm:dev:client\"",
     "dev:client": "npm run dev -w client",

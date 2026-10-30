@@ -136,6 +136,7 @@ changed and starts over instead of mixing the two.
 | `npm run typecheck` | TypeScript check of the three packages |
 | `npm run build` | Build of the web app into `client/dist` |
 | `npm run seed:history` | Push, Pull and Legs workouts with 18 months of history in `server/data`, to try the history, records and charts |
+| `npm run export:library -- --out <folder>` | The exercise library as a new server imports it (`exercises.json` and `images/`), for an app that embeds it |
 | `npm run db:generate` | New migration after a change to `server/src/db/schema.ts` |
 | `npx knip` | Detection of unused code and dependencies |
 | `npm run release -- minor` | Publishes a version (`patch` for fixes only, `major` when updating needs a manual step) |
