@@ -1,6 +1,6 @@
 import type { LocalExercise, LocalSession, LocalSetLog } from '../db/db.ts';
 import { formatSetValues } from '../lib/format.ts';
-import { metricsForType } from '../lib/progress.ts';
+import { isRecordMetric, metricsForType } from '../lib/progress.ts';
 import { type PanelMetric, ProgressPanel } from './ProgressPanel.tsx';
 import { t } from '../lib/i18n.ts';
 
@@ -12,8 +12,7 @@ export function ExerciseProgress({ exercise, history }: { exercise: LocalExercis
     format: m.format,
     scale: m.scale,
     higherIsBetter: m.higherIsBetter,
-    // An estimated 1RM is not a weight actually lifted.
-    record: m.id !== '1rm',
+    record: isRecordMetric(m),
     rows: history.flatMap((h) => {
       const value = m.best(h.sets);
       return value === undefined

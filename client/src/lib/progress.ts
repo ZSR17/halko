@@ -100,6 +100,9 @@ export function metricsForType(type: ExerciseType): ProgressMetric[] {
   }
 }
 
+// An estimated 1RM is not a weight actually lifted: followed like the others, but never a record.
+export const isRecordMetric = (metric: ProgressMetric) => metric.id !== '1rm';
+
 function isBetter(metric: ProgressMetric, value: number, previousBest: number | undefined): boolean {
   if (previousBest === undefined) return false; // first time is not a "record"
   return metric.higherIsBetter ? value > previousBest : value < previousBest;
