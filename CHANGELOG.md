@@ -4,6 +4,9 @@ English · [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+- An estimated 1RM no longer counts among the records broken by a session: it is not a weight actually
+  lifted.
+
 ## 1.1.0 — 2026-10-29
 
 - Library exercises have the same id on every server. An existing server moves them on start, with the

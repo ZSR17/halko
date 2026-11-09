@@ -7,7 +7,7 @@ import { Icon } from '../components/Icon.tsx';
 import { type LocalExercise, type LocalSetLog, db } from '../db/db.ts';
 import { deleteSession, exerciseHistory, sessionLogs } from '../db/sessions.ts';
 import { formatSetValues } from '../lib/format.ts';
-import { metricsForType, recordFor } from '../lib/progress.ts';
+import { isRecordMetric, metricsForType, recordFor } from '../lib/progress.ts';
 import { formatMinutes, formatTonnage, sessionDurationMs, sessionVolumeG } from '../lib/stats.ts';
 import { formatDate, t } from '../lib/i18n.ts';
 
@@ -39,7 +39,7 @@ export function SessionDetail() {
       const sets = logs.filter((l) => l.exerciseId === exerciseId).sort((a, b) => a.setIndex - b.setIndex);
       const earlier = (await exerciseHistory(exerciseId)).filter((h) => h.session.startedAt < session.startedAt).map((h) => h.sets);
       const records = exercise
-        ? metricsForType(exercise.exerciseType).flatMap((m) => {
+        ? metricsForType(exercise.exerciseType).filter(isRecordMetric).flatMap((m) => {
             const r = recordFor(m, earlier, sets);
             return r ? [t('sessionDetail.record', { label: m.label, value: m.format(r.value), previous: m.format(r.previous) })] : [];
           })

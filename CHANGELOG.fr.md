@@ -4,6 +4,9 @@
 
 ## Pas encore publié
 
+- Un 1RM estimé ne compte plus parmi les records battus d’une séance : ce n’est pas une charge réellement
+  soulevée.
+
 ## 1.1.0 — 2026-10-29
 
 - Les exercices de la bibliothèque ont le même identifiant sur tous les serveurs. Un serveur existant les
