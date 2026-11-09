@@ -4,6 +4,8 @@
 
 ## Pas encore publié
 
+## 1.2.0 — 2026-11-09
+
 - Un 1RM estimé ne compte plus parmi les records battus d’une séance : ce n’est pas une charge réellement
   soulevée.
 

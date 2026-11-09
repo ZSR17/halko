@@ -4,6 +4,8 @@ English · [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 1.2.0 — 2026-11-09
+
 - An estimated 1RM no longer counts among the records broken by a session: it is not a weight actually
   lifted.
 
